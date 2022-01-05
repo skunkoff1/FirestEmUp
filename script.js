@@ -1,5 +1,6 @@
 /*============= VARIABLES ============================*/
 let scoreDisplay = document.getElementById('score');
+let img = document.getElementById("myImage");
 let info = document.getElementById('infoGames');
 var canvas = document.querySelector('canvas');
 var ctx = canvas.getContext('2d');
@@ -28,6 +29,7 @@ class Entity {
         this.radius = radius;
         ctx.beginPath();
         ctx.rect(posX, posY, radius, radius);
+        // context.drawImage(img, posX, posY);
         ctx.fillStyle = "#FF0000";
         ctx.fill();
         ctx.closePath();
@@ -134,6 +136,7 @@ function isCollision(tab1, tab2) {
 
 }
 
+
 /*==================== FONCTIONS BOUCLE DE JEU ======================================*/
 
 function draw() {
@@ -143,6 +146,7 @@ function draw() {
 
     // création / Mise à jour position vaisseau
     let ship = new Entity(shipX, shipY, 25);
+    // context.drawImage(img, shipX, shipY);
 
     isCollision(bulletsTab, enemyTab)
     moveEnemies(enemyTab);
