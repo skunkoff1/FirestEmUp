@@ -1,28 +1,24 @@
 class Ship {
-    constructor(length, x, y) {
+    constructor(radius, x, y) {
+        this.radius = radius;
+        this.x = x;
+        this.y = y;
+    }
 
-        // points du côté haut
-        for (let i = 0; i<length; i++) {
-            this.hitBox[i] = [i,0];
-        }
+    detectHit(obj) {
+        let dx = this.x - obj.x;
+        let dy = this.y - obj.y;
+        let dist = Math.sqrt(dx*dx + dy*dy);
 
-        // points du côté gauche
-        for (let i = 0; i<length; i++) {
-            this.hitBox[i+length] = [0,i];
-        }
-
-        // points du côté bas
-        for (let i = 0; i<length; i++) {
-            this.hitBox[i+(length*2)] = [i,length];
-        }
-
-        // points du côté droit
-        for (let i = 0; i<length; i++) {
-            hitBox[i+(length*3)] = [length,i];
+        if(dist < this.radius + obj.radius) {
+            return true;
+        } else {
+            return false;
         }
     }
 }
 
+let bob = new Ship(10, 0, 0);
 
 let ship = document.getElementById('ship');
 let x = 50;
