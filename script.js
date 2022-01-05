@@ -27,4 +27,7 @@ window.addEventListener("keypress", (event) => {
         console.log("d pressed");
         return x;
     }
+    if (event.key === 'z') {
+
+    }
 })
