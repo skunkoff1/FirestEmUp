@@ -1,24 +1,21 @@
-class Ship {
-    constructor(radius, x, y) {
-        this.radius = radius;
-        this.x = x;
-        this.y = y;
-    }
+import Entity from "./entity";
 
-    detectHit(obj) {
-        let dx = this.x - obj.x;
-        let dy = this.y - obj.y;
-        let dist = Math.sqrt(dx*dx + dy*dy);
+function isCollision(obj1, obj2) {
+    let dx = obj1.x - obj2.x;
+    let dy = obj1.y - obj2.y;
+    let dist = Math.sqrt(dx*dx + dy*dy);
 
-        if(dist < this.radius + obj.radius) {
-            return true;
-        } else {
-            return false;
-        }
+    if(dist < obj1.radius + obj2.radius) {
+        return true;
+    } else {
+        return false;
     }
 }
 
-let bob = new Ship(10, 0, 0);
+
+let bob = new Entity(10, 0, 0);
+let Maurice = new Entity(10, 5, 5);
+let Math = new Entity(10, 50, 50);
 
 let ship = document.getElementById('ship');
 let x = 50;
