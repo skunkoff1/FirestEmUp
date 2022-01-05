@@ -8,3 +8,9 @@ canvas {
     display: block;
     margin: auto;
 }
+
+#infoGames {
+    width: 1200px;
+    margin: auto;
+    font-size: 40px;
+}

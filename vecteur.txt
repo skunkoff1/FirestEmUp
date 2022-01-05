@@ -1,0 +1,79 @@
+Classe Vecteur2D 
+	
+    /* ============== Attributs ===============================*/
+
+	private var x : Reel
+	private var y : Reel
+
+    /* ================= Constructeurs =============================*/
+
+	Public Fonction  Vecteur2D ( var x : entier, var y : entier) : NULL
+		this.x = (Reel)x
+		this.y = (Reel)y
+	Finfonction
+
+	Public Fonction Vecteur2D ( var x : reel, var y : reel) : NULL
+		this.x = x
+		this.y = y
+	Finfonction
+	
+	Public Fonction Vecteur2D ( var autreVecteur : Vecteur2D) : NULL
+		this.x = autreVecteur.getX()
+		this.y = autreVecteur.getY()
+	Finfonction
+
+    /* ============= Getters et setters===================== */
+
+	Public Fonction getX() : Entier ou Reel
+            retourne this.x
+    FinFonction
+
+	Public Fonction getY() : Entier ou Reel
+            retourne this.x
+    FinFonction
+
+	Public Fonction SetX(var nouveauxX : Reel) : NULL
+            this.x = nouveauX
+    FinFonction
+
+	Public Fonction SetY(var nouveauxY : Reel) : NULL
+            this.y = nouveauY
+    FinFonction
+
+    /*=============== Méthodes ================================*/
+
+    PublicFonction Ajouter( var vecteur1 : Vecteur2D , var vecteur2 Vecteur2D) : Vecteur2D
+        var x = vecteur1.getX() + vecteur2d.getX()
+        var y = vecteur1.getY() + vecteur2d.getY()
+
+        return new Vecteur2D( x, y )
+    FinFonction
+
+    PublicFonction Soustraire( var vecteur1 Vecteur2D, Vecteur2D vecteur2 ) : Vecteur2D
+        var x = vecteur1.getX() - vecteur2d.getX()
+        var y = vecteur1.getY() - vecteur2d.getY()
+
+        return new Vecteur2D( x, y )
+    FinFonction
+
+    PublicFonction Multiplier( Vecteur2D vecteur1 , var nombre : reel ) : Vecteur2D
+        var x = vecteur1.getX() * nombre
+        var y = vecteur1.getY() * nombre
+
+        return vecteur1
+    FinFonction
+
+    PublicFonction Multiplier( Vecteur2D vecteur1 , var nombre : reel ) : Vecteur2D
+        var x = vecteur1.getX() / nombre
+        var y = vecteur1.getY() / nombre
+
+        return vecteur1
+    FinFonction
+
+    Public Fonction ToString() : Chaine de caractères
+        retourne " x : " + this.getX() + " y : " + this.getY()
+    FinFonction
+
+
+
+
