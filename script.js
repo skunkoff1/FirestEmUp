@@ -1,11 +1,7 @@
 import Entity from './modules.js/entity'
 import Player from './modules.js/player'
-import Ennemy from './modules.js/ennemy';
+import Enemy from './modules.js/enemy';
 import Bullets from './modules.js/bullets';
-// il faut importer chaque classe séparément. Ici :
-// 'Entity' car l'export d'Entity a une propriété default
-// et à l'inverse '{Player}' car pas de propriété default
-
 
 /*============= VARIABLES ============================*/
 let scoreDisplay = document.getElementById('score');
@@ -18,7 +14,6 @@ var leftPressed = false;
 var upPressed = false;
 var downPressed = false;
 var spacePressed = false;
-var enemyTab = [];
 var dy = 1;
 let count = 0;
 let rndX;
@@ -78,10 +73,10 @@ function keyUpHandler(e) {
 
 /*================== FONCTION BULLETS =======================================*/
 
-function drawBullets() {
-    for (let i = 0; i < Bullets.goodBullets.length; i++) {
+function drawBullets(tab) {
+    for (let i = 0; i < tab.length; i++) {
         ctx.beginPath();
-        ctx.arc(Bullets.goodBullets[i].posX, Bullets.goodBullets[i].posY, Bullets.goodBullets[i].radius, 0, Math.PI*2, true);
+        ctx.arc(tab[i].posX, tab[i].posY, tab[i].radius, 0, Math.PI*2, true);
         ctx.fillStyle = "#ffe436";
         ctx.fill();
         ctx.closePath();
@@ -90,10 +85,7 @@ function drawBullets() {
 
 function moveBullets(tab) {
     for (let i = 0; i < tab.length; i++) {
-        tab[i].posY -= 10;
-        if (tab[i].posY <= 0) {
-            tab.splice(i, 1);
-        }
+        tab[i].move(tab[i].direction);
     }
 }
 
@@ -102,7 +94,7 @@ function moveBullets(tab) {
 function drawEnemies() {
     for (let i = 0; i < enemyTab.length; i++) {
         ctx.beginPath();
-        ctx.rect(enemyTab[i].posX, enemyTab[i].posY, enemyTab[i].radius, enemyTab[i].radius);
+        ctx.rect(Enemy.enemyTab[i].posX, Enemy.enemyTab[i].posY, Enemy.enemyTab[i].radius, Enemy.enemyTab[i].radius);
         ctx.fillStyle = "#00561b";
         ctx.fill();
         ctx.closePath();
@@ -137,30 +129,43 @@ function getNextMove() {
 
 /*====================== FONCTIONS GESTION DES HITBOXES =============================*/
 
-function isCollision(tab1, tab2) {
-    for (let i = 0; i < tab1.length; i++) {
-        for (let j = 0; j < tab2.length; j++) {
+// function isCollision(tab1, tab2) {
+//     for (let i = 0; i < tab1.length; i++) {
+//         for (let j = 0; j < tab2.length; j++) {
 
-            let dx = tab1[i].posX - tab2[j].posX;
-            let dy = tab1[i].posY - tab2[j].posY;
-            let dist = Math.sqrt(dx * dx + dy * dy);
+//             let dx = tab1[i].posX - tab2[j].posX;
+//             let dy = tab1[i].posY - tab2[j].posY;
+//             let dist = Math.sqrt(dx * dx + dy * dy);
 
-            if (dist < tab1[i].radius + tab2[j].radius) {
-                score += 10;
-                scoreDisplay.innerHTML = score;
-                tab1.splice(i, 1);
-                tab2.splice(j, 1);
-            }
+//             if (dist < tab1[i].radius + tab2[j].radius) {
+//                 score += 10;
+//                 scoreDisplay.innerHTML = score;
+//                 tab1.splice(i, 1);
+//                 tab2.splice(j, 1);
+//             }
+//         }
+//     }
+
+// }
+
+// rendu plus générique pour l'utiliser sur les bullets ennemies
+function isCollision(entity, tab) {
+    for (let i = 0; i < tab.length; i++) {
+        let dx = entity.posX - tab[i].posX;
+        let dy = entity.posY - tab[i].posY;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < entity.radius + tab[i].radius) {
+            tab.splice(i, 1);
+            entity.damage();
         }
     }
-
 }
 
 
 /*==================== FONCTIONS BOUCLE DE JEU ======================================*/
 
 function draw() {
-    let bob = new Ennemy(50, 50);
 
     // Remise à zéro du canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -169,19 +174,26 @@ function draw() {
     let player = Player.getInstance();
     drawPlayer();
     // context.drawImage(img, shipX, shipY);
-
-    isCollision(Bullets.goodBullets, enemyTab)
-    moveEnemies(enemyTab);
+    for (Enemy in Enemy.enemyTab) {
+        isCollision(Enemy, Bullets.goodBullets);
+    }
+    isCollision(player, Bullets.badBullets);
+    moveEnemies(Enemy.enemyTab);
     drawEnemies();
     moveBullets(Bullets.goodBullets);
-    drawBullets();
+    drawBullets(Bullets.goodBullets);
+    moveBullets(Bullets.badBullets);
+    drawBullets(Bullets.badBullets);
 
     // Création d'ennemis toutes les 60 frames (1sec), Stockage dans un tableau
     if (count % 40 == 0) {
         rndX = Math.round(Math.random() * 1180);
         rndY = 0;
-        let enemy = new Entity(rndX, rndY, 30);
-        enemyTab.push(enemy);
+        let enemy = new Enemy(rndX, rndY, 30);
+        Enemy.enemyTab.push(enemy);
+        for (enemy in Enemy.enemyTab) {
+            shoot();
+        }
     }
 
     // Création des tirs, Stockage dans un tableau

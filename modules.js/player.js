@@ -11,6 +11,7 @@ export default class Player extends Entity {
     // on utilise des entrées par défaut pour la création du vaisseau joueur
     constructor() {
         super(600, 300, 25, 7);
+        this.hp = 3;
     }
 
     // fonction d'accès au singleton ou vaisseau joueur
@@ -19,6 +20,13 @@ export default class Player extends Entity {
             Player.instance = new Player();
         } else {
             return Player.instance;
+        }
+    }
+
+    damage() {
+        this.hp -= 1;
+        if (this.hp = 0) {
+            alert("GameOver");
         }
     }
 
@@ -38,6 +46,6 @@ export default class Player extends Entity {
 
     // fonction de tir, qui instancie une bullet a la position actuelle
     shoot() {
-        new Bullets(this.posX, this.posY, false);
+        new Bullets(this.posX, this.posY, false, "up");
     }
 }

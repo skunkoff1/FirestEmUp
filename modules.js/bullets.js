@@ -11,9 +11,9 @@ export default class Bullets extends Entity {
     // on appelle le constructeur de la classe mère en ajoutant un boolean ennemy qui
     // sert a faire le tri avant d'envoyer les bullets dans un tableau.
     // pour l'instant les bullets ont une vitesse et une taille prédéfinie
-    constructor (posX, posY, ennemy) {
+    constructor (posX, posY, ennemy, direction) {
         super(posX, posY, 8, 10);
-        
+        this.direction = direction;
         if (ennemy) {
             Bullets.badBullets.push(this);
         } else {
