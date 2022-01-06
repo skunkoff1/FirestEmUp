@@ -1,16 +1,22 @@
 * {
-  padding: 0;
-  margin: 0;
+    padding: 0;
+    margin: 0;
 }
 
 canvas {
-  background-color: black;
-  display: block;
-  margin: auto;
+    background-color: black;
+    display: block;
+    margin: auto;
 }
 
 #infoGames {
-  width: 1200px;
-  margin: auto;
-  font-size: 40px;
+    width: 1200px;
+    margin: auto;
+    font-size: 40px;
+    display: flex;
+}
+
+#myImage {
+    width: 50px;
+    height: auto;
 }
