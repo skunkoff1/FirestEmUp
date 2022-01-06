@@ -1,4 +1,5 @@
 import Entity from './entity';
+import Bullets from './bullets';
 
 class Enemy extends Entity {
 

@@ -92,7 +92,7 @@ function moveBullets(tab) {
 /*================== FONCTIONS ENNEMIS =============================*/
 
 function drawEnemies() {
-    for (let i = 0; i < enemyTab.length; i++) {
+    for (let i = 0; i < Enemy.enemyTab.length; i++) {
         ctx.beginPath();
         ctx.rect(Enemy.enemyTab[i].posX, Enemy.enemyTab[i].posY, Enemy.enemyTab[i].radius, Enemy.enemyTab[i].radius);
         ctx.fillStyle = "#00561b";
@@ -174,8 +174,8 @@ function draw() {
     let player = Player.getInstance();
     drawPlayer();
     // context.drawImage(img, shipX, shipY);
-    for (Enemy in Enemy.enemyTab) {
-        isCollision(Enemy, Bullets.goodBullets);
+    for (let i = 0; i<Enemy.enemyTab.length;i++) {
+        isCollision(Enemy.enemyTab[i], Bullets.goodBullets);
     }
     isCollision(player, Bullets.badBullets);
     moveEnemies(Enemy.enemyTab);
@@ -189,10 +189,9 @@ function draw() {
     if (count % 40 == 0) {
         rndX = Math.round(Math.random() * 1180);
         rndY = 0;
-        let enemy = new Enemy(rndX, rndY, 30);
-        Enemy.enemyTab.push(enemy);
-        for (enemy in Enemy.enemyTab) {
-            shoot();
+        let enemy = new Enemy(rndX, rndY, 10);
+        for (let i = 0; i<Enemy.enemyTab.length;i++) {
+            Enemy.enemyTab[i].shoot();
         }
     }
 
