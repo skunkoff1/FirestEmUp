@@ -152,7 +152,10 @@ function isCollision(entity, tab) {
 
 /*==================== FONCTIONS BOUCLE DE JEU ======================================*/
 
-function draw() {
+function loop() {
+    if (Player.inGame == false) {
+        clearInterval(game);
+    }
     // Remise à zéro du canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -172,9 +175,7 @@ function draw() {
 
     // Création d'ennemis toutes les 60 frames (1sec), Stockage dans un tableau
     if (count % 60 == 0) {
-        if (Player.inGame == false) {
-            clearInterval(game);
-        }
+        
         for (let i = 0; i<Enemy.enemyTab.length;i++) {
             Enemy.enemyTab[i].shoot();
         }
@@ -218,4 +219,4 @@ function draw() {
 }
 
 // Creations des frames toutes les 16 millisecondes
-var game = setInterval(draw, 16);
+var game = setInterval(loop, 16);
