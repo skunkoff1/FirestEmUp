@@ -105,7 +105,6 @@ export class Bullets extends Entity {
         // comment je récupère l'id du tableau de la bullet qui a hit un mur ??
         // idée de solution : ajouter une durée de vie a une bullet pour l'auto sortir du tableau
 
-        // autre solution possible : faire le calcul de hitbox sur le main en parcourant le tableau, et a ce moment là détruire les bullets
     }
 
 }
