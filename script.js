@@ -1,4 +1,3 @@
-import Entity from './modules.js/entity'
 import Player from './modules.js/player'
 import Enemy from './modules.js/enemy';
 import Bullets from './modules.js/bullets';
@@ -6,6 +5,7 @@ import Bullets from './modules.js/bullets';
 /*============= VARIABLES ============================*/
 let scoreDisplay = document.getElementById('score');
 let img = document.getElementById("myImage");
+let enemyImg = document.getElementById("enemyIcon");
 let info = document.getElementById('infoGames');
 var canvas = document.querySelector('canvas');
 var ctx = canvas.getContext('2d');
@@ -18,10 +18,12 @@ var dy = 1;
 let count = 0;
 let rndX;
 let rndY;
-let score = 0;
 scoreDisplay.innerHTML = 0;
 
 /*================= afficher les entités =========*/
+
+enemyImg.style.display = "none";
+img.style.display = "none";
 
 function drawPlayer() {
     // update du drawPlayer, il a simplement a récupérer les coordonnées actuelles
@@ -29,8 +31,6 @@ function drawPlayer() {
     let entity = Player.getInstance();
     ctx.beginPath();
     ctx.drawImage(img, entity.posX-25, entity.posY-27, 50, 54);
-    ctx.fillStyle = "#FF0000";
-    ctx.fill();
     ctx.closePath();
 }
 
@@ -53,6 +53,7 @@ function keyDownHandler(e) {
 
     // same here, factorisation via l'objet
         Player.getInstance().shoot();
+        Player.getInstance().speed = 4;
     }
 }
 
@@ -67,17 +68,25 @@ function keyUpHandler(e) {
         downPressed = false;
     } else if (e.key == "n") {
         spacePressed = false;
+        Player.getInstance().speed = 7;
     }
 }
 
 
 /*================== FONCTION BULLETS =======================================*/
 
-function drawBullets(tab) {
-    for (let i = 0; i < tab.length; i++) {
+function drawBullets() {
+    for (let i = 0; i < Bullets.goodBullets.length; i++) {
         ctx.beginPath();
-        ctx.arc(tab[i].posX, tab[i].posY, tab[i].radius, 0, Math.PI*2, true);
+        ctx.arc(Bullets.goodBullets[i].posX, Bullets.goodBullets[i].posY, Bullets.goodBullets[i].radius, 0, Math.PI*2, true);
         ctx.fillStyle = "#ffe436";
+        ctx.fill();
+        ctx.closePath();
+    }
+    for (let j = 0; j < Bullets.badBullets.length; j++) {
+        ctx.beginPath();
+        ctx.arc(Bullets.badBullets[j].posX, Bullets.badBullets[j].posY, Bullets.badBullets[j].radius, 0, Math.PI*2, true);
+        ctx.fillStyle = "#90ee90";
         ctx.fill();
         ctx.closePath();
     }
@@ -94,9 +103,7 @@ function moveBullets(tab) {
 function drawEnemies() {
     for (let i = 0; i < Enemy.enemyTab.length; i++) {
         ctx.beginPath();
-        ctx.rect(Enemy.enemyTab[i].posX, Enemy.enemyTab[i].posY, Enemy.enemyTab[i].radius, Enemy.enemyTab[i].radius);
-        ctx.fillStyle = "#00561b";
-        ctx.fill();
+        ctx.drawImage(enemyImg, Enemy.enemyTab[i].posX-25, Enemy.enemyTab[i].posY-27, 50, 54);
         ctx.closePath();
     }
 }
@@ -129,25 +136,6 @@ function getNextMove() {
 
 /*====================== FONCTIONS GESTION DES HITBOXES =============================*/
 
-// function isCollision(tab1, tab2) {
-//     for (let i = 0; i < tab1.length; i++) {
-//         for (let j = 0; j < tab2.length; j++) {
-
-//             let dx = tab1[i].posX - tab2[j].posX;
-//             let dy = tab1[i].posY - tab2[j].posY;
-//             let dist = Math.sqrt(dx * dx + dy * dy);
-
-//             if (dist < tab1[i].radius + tab2[j].radius) {
-//                 score += 10;
-//                 scoreDisplay.innerHTML = score;
-//                 tab1.splice(i, 1);
-//                 tab2.splice(j, 1);
-//             }
-//         }
-//     }
-
-// }
-
 // rendu plus générique pour l'utiliser sur les bullets ennemies
 function isCollision(entity, tab) {
     for (let i = 0; i < tab.length; i++) {
@@ -162,11 +150,9 @@ function isCollision(entity, tab) {
     }
 }
 
-
 /*==================== FONCTIONS BOUCLE DE JEU ======================================*/
 
 function draw() {
-
     // Remise à zéro du canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -181,18 +167,23 @@ function draw() {
     moveEnemies(Enemy.enemyTab);
     drawEnemies();
     moveBullets(Bullets.goodBullets);
-    drawBullets(Bullets.goodBullets);
     moveBullets(Bullets.badBullets);
-    drawBullets(Bullets.badBullets);
+    drawBullets();
 
     // Création d'ennemis toutes les 60 frames (1sec), Stockage dans un tableau
-    if (count % 40 == 0) {
-        rndX = Math.round(Math.random() * 1180);
-        rndY = 0;
-        let enemy = new Enemy(rndX, rndY, 10);
+    if (count % 60 == 0) {
+        if (Player.inGame == false) {
+            clearInterval(game);
+        }
         for (let i = 0; i<Enemy.enemyTab.length;i++) {
             Enemy.enemyTab[i].shoot();
         }
+    }
+
+    if (count % 200 == 0) {
+        rndX = Math.round(Math.random() * 1180);
+        rndY = 0;
+        let enemy = new Enemy(rndX, rndY, 8);
     }
 
     // Création des tirs, Stockage dans un tableau
@@ -227,4 +218,4 @@ function draw() {
 }
 
 // Creations des frames toutes les 16 millisecondes
-setInterval(draw, 16);
+var game = setInterval(draw, 16);

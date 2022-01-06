@@ -36,7 +36,16 @@ export default class Entity {
 
     // action a réaliser si un mur est touché
     wallHit() {
-        console.log(this+" has hit a wall");
+        if (this.posX - this.radius <= 0) {
+            this.posX = this.radius;
+        } else if (this.posX + this.radius >= canvas.width) {
+            this.posX = canvas.width - this.radius;
+        }
+        if (this.posY - this.radius <= 0) {
+            this.posY = this.radius;
+        } else if (this.posY + this.radius >= canvas.height) {
+            this.posY = canvas.height - this.radius;
+        }
     }
 }
 

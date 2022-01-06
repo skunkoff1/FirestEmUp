@@ -1,10 +1,10 @@
 import Entity from './entity';
 import Bullets from './bullets';
 
-let canvas = document.querySelector('canvas');
-
 export default class Player extends Entity {
 
+    static inGame = true;
+    static score = 0;
     // singleton, instance unique de la classe Player qui modélise le vaisseau du joueur
     static instance = null;
 
@@ -25,27 +25,15 @@ export default class Player extends Entity {
 
     damage() {
         this.hp -= 1;
-        if (this.hp = 0) {
-            alert("GameOver");
-        }
-    }
-
-    // polymorphisme de la methode wallHit pour le player, bloque sa position au bord de la map
-    wallHit() {
-        if (this.posX - this.radius <= 0) {
-            this.posX = this.radius;
-        } else if (this.posX + this.radius >= canvas.width) {
-            this.posX = canvas.width - this.radius;
-        }
-        if (this.posY - this.radius <= 0) {
-            this.posY = this.radius;
-        } else if (this.posY + this.radius >= canvas.height) {
-            this.posY = canvas.height - this.radius;
+        if (this.hp == 0) {
+            Player.inGame = false;
+            alert("Game Over ! Your score : "+Player.score);
         }
     }
 
     // fonction de tir, qui instancie une bullet a la position actuelle
     shoot() {
-        new Bullets(this.posX, this.posY, false, "up");
+        let bullet = new Bullets(this.posX, this.posY, false, "up");
+        Bullets.goodBullets.push(bullet);
     }
 }
