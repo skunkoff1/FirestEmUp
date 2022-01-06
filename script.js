@@ -1,4 +1,4 @@
-import Entity, {Player} from './modules.js/entity'
+import Entity, {Player, Bullets} from './modules.js/entity'
 // il faut importer chaque classe séparément. Ici :
 // 'Entity' car l'export d'Entity a une propriété default
 // et à l'inverse '{Player}' car pas de propriété default
@@ -15,7 +15,6 @@ var leftPressed = false;
 var upPressed = false;
 var downPressed = false;
 var spacePressed = false;
-let bulletsTab = [];
 var enemyTab = [];
 var dy = 1;
 let count = 0;
@@ -77,10 +76,9 @@ function keyUpHandler(e) {
 /*================== FONCTION BULLETS =======================================*/
 
 function drawBullets() {
-    for (let i = 0; i < bulletsTab.length; i++) {
+    for (let i = 0; i < Bullets.goodBullets.length; i++) {
         ctx.beginPath();
-        ctx.arc(bulletsTab[i].posX, bulletsTab[i].posY, bulletsTab[i].radius, 0, Math.PI*2, true);
-       
+        ctx.arc(Bullets.goodBullets[i].posX, Bullets.goodBullets[i].posY, Bullets.goodBullets[i].radius, 0, Math.PI*2, true);
         ctx.fillStyle = "#ffe436";
         ctx.fill();
         ctx.closePath();
@@ -168,10 +166,10 @@ function draw() {
     drawPlayer();
     // context.drawImage(img, shipX, shipY);
 
-    isCollision(bulletsTab, enemyTab)
+    isCollision(Bullets.goodBullets, enemyTab)
     moveEnemies(enemyTab);
     drawEnemies();
-    moveBullets(bulletsTab);
+    moveBullets(Bullets.goodBullets);
     drawBullets();
 
     // Création d'ennemis toutes les 60 frames (1sec), Stockage dans un tableau
