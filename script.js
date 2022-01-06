@@ -1,17 +1,16 @@
+import Entity from './modules.js/entity'
+
 /*============= VARIABLES ============================*/
 let scoreDisplay = document.getElementById('score');
 let img = document.getElementById("myImage");
 let info = document.getElementById('infoGames');
 var canvas = document.querySelector('canvas');
 var ctx = canvas.getContext('2d');
-var shipX = 600;
-var shipY = 300;
 var rightPressed = false;
 var leftPressed = false;
 var upPressed = false;
 var downPressed = false;
 var spacePressed = false;
-var speed = 7;
 var bulletsTab = [];
 var enemyTab = [];
 var dy = 1;
@@ -21,19 +20,15 @@ let rndY;
 let score = 0;
 scoreDisplay.innerHTML = 0;
 
-/*================= CLASSE ENTITE (Vaisseau, bullets, ennemis) =========*/
-class Entity {
-    constructor(posX, posY, radius) {
-        this.posX = posX;
-        this.posY = posY;
-        this.radius = radius;
-        ctx.beginPath();
-        ctx.rect(posX, posY, radius, radius);
-        // context.drawImage(img, posX, posY);
-        ctx.fillStyle = "#FF0000";
-        ctx.fill();
-        ctx.closePath();
-    }
+/*================= afficher les entités =========*/
+let ship = new Entity(600, 300, 25, 7);
+
+function drawPlayer() {
+    ctx.beginPath();
+    ctx.drawImage(img, posX-25, posY, 50, 54);
+    ctx.fillStyle = "#FF0000";
+    ctx.fill();
+    ctx.closePath();
 }
 
 /*============ FONCTION EVENEMENT CLAVIER ( Mouvoir le vaisseau, Tirer ) ==================*/
@@ -77,8 +72,8 @@ function keyUpHandler(e) {
 function drawBullets() {
     for (let i = 0; i < bulletsTab.length; i++) {
         ctx.beginPath();
-        ctx.rect(bulletsTab[i].posX + 5, bulletsTab[i].posY, bulletsTab[i].radius, bulletsTab[i].radius);
-        ctx.rect(bulletsTab[i].posX + 12, bulletsTab[i].posY, bulletsTab[i].radius, bulletsTab[i].radius);
+        ctx.arc(bulletsTab[i].posX, bulletsTab[i].posY, bulletsTab[i].radius, 0, Math.PI*2, true);
+       
         ctx.fillStyle = "#ffe436";
         ctx.fill();
         ctx.closePath();
@@ -108,11 +103,28 @@ function drawEnemies() {
 
 function moveEnemies(tab) {
     for (let i = 0; i < tab.length; i++) {
-        tab[i].posY += 1;
-        if (tab[i].posY >= canvas.height) {
-            tab.splice(i, 1);
-        }
+        tab[i].posY += getNextMove()*5;
+        tab[i].posX += getNextMove()*5;
     }
+}
+
+function getNextMove() {
+    let output = 0;
+    let answer = Math.floor(Math.random() * 3);
+    switch (answer) {
+        case 0 :
+            output = -1;
+            break;
+        case 1 :
+            output = 0;
+            break;
+        case 2 :
+            output = 1;
+            break;
+        default :
+            console.log("Erreur in getNextMove() switch");
+    }
+    return output;
 }
 
 /*====================== FONCTIONS GESTION DES HITBOXES =============================*/
@@ -145,7 +157,7 @@ function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // création / Mise à jour position vaisseau
-    let ship = new Entity(shipX, shipY, 25);
+    drawPlayer();
     // context.drawImage(img, shipX, shipY);
 
     isCollision(bulletsTab, enemyTab)
@@ -165,76 +177,28 @@ function draw() {
     // Création des tirs, Stockage dans un tableau
 
     if (spacePressed && count % 7 == 0) {
-        let bullets = new Entity(shipX, shipY, 5);
+        let bullets = new Entity(shipX, shipY, 8);
         bulletsTab.push(bullets);
     }
 
     // Fonction mise à jour de la position du vaisseau en fonction des touches pressées
 
     if (upPressed && rightPressed) {
-        shipY -= speed;
-        shipX += speed;
-        if (shipY < 0 && shipX > canvas.width - 25) {
-            shipY = 0;
-            shipX = canvas.width - 25;
-        } else if (shipX > canvas.width - 25) {
-            shipX = canvas.width - 25;
-        } else if (shipY < 0) {
-            shipY = 0;
-        }
+        ship.move("upright");
     } else if (upPressed && leftPressed) {
-        shipX -= speed;
-        shipY -= speed;
-        if (shipX < 0 && shipY < 0) {
-            shipY = 0;
-            shipX = 0;
-        } else if (shipX < 0) {
-            shipX = 0;
-        } else if (shipY < 0) {
-            shipY = 0;
-        }
+        ship.move("upleft");
     } else if (downPressed && rightPressed) {
-        shipY += speed;
-        shipX += speed;
-        if (shipX > canvas.width - 25 && shipY > canvas.height - 25) {
-            shipX = canvas.width - 25;
-            shipY = canvas.height - 25;
-        } else if (shipX > canvas.width - 25) {
-            shipX = canvas.width - 25;
-        } else if (shipY > canvas.height - 25) {
-            shipY = canvas.height - 25;
-        }
+        ship.move("downright");
     } else if (downPressed && leftPressed) {
-        shipY += speed;
-        shipX -= speed;
-        if (shipX < 0 && shipY > canvas.height - 25) {
-            shipX = 0;
-            shipY = canvas.height - 25;
-        } else if (shipX < 0) {
-            shipX = 0;
-        } else if (shipY > canvas.height - 25) {
-            shipY = canvas.height - 25;
-        }
+        ship.move("downleft");
     } else if (rightPressed) {
-        shipX += speed;
-        if (shipX > canvas.width - 25) {
-            shipX = canvas.width - 25;
-        }
+        ship.move("right");
     } else if (leftPressed) {
-        shipX -= speed;
-        if (shipX < 0) {
-            shipX = 0;
-        }
+        ship.move("left");
     } else if (upPressed) {
-        shipY -= speed;
-        if (shipY < 0) {
-            shipY = 0;
-        }
+        ship.move("up");
     } else if (downPressed) {
-        shipY += speed;
-        if (shipY > canvas.height - 25) {
-            shipY = canvas.height - 25;
-        }
+        ship.move("down");
     }
 
     // Compteur de frames
@@ -244,3 +208,5 @@ function draw() {
 
 // Creations des frames toutes les 16 millisecondes
 setInterval(draw, 16);
+
+export { canvas }
