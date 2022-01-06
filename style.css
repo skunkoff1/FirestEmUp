@@ -1,20 +1,16 @@
-body,
-html {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
+* {
+  padding: 0;
+  margin: 0;
 }
 
-#container {
-    background-color: black;
-    height: 100vh;
+canvas {
+  background-color: black;
+  display: block;
+  margin: auto;
 }
 
-#ship {
-    background-color: blue;
-    height: 25px;
-    width: 25px;
-    position: absolute;
-    left: 50%;
-    top: 50%;
+#infoGames {
+  width: 1200px;
+  margin: auto;
+  font-size: 40px;
 }
