@@ -1,4 +1,8 @@
-import Entity from './modules.js/entity'
+import Entity, {Player} from './modules.js/entity'
+// il faut importer chaque classe séparément. Ici :
+// 'Entity' car l'export d'Entity a une propriété default
+// et à l'inverse '{Player}' car pas de propriété default
+
 
 /*============= VARIABLES ============================*/
 let scoreDisplay = document.getElementById('score');
@@ -11,7 +15,7 @@ var leftPressed = false;
 var upPressed = false;
 var downPressed = false;
 var spacePressed = false;
-var bulletsTab = [];
+let bulletsTab = [];
 var enemyTab = [];
 var dy = 1;
 let count = 0;
@@ -21,11 +25,13 @@ let score = 0;
 scoreDisplay.innerHTML = 0;
 
 /*================= afficher les entités =========*/
-let ship = new Entity(600, 300, 25, 7);
 
 function drawPlayer() {
+    // update du drawPlayer, il a simplement a récupérer les coordonnées actuelles
+    // du singleton pour l'afficher
+    let entity = Player.getInstance();
     ctx.beginPath();
-    ctx.drawImage(img, posX-25, posY, 50, 54);
+    ctx.drawImage(img, entity.posX-25, entity.posY-27, 50, 54);
     ctx.fillStyle = "#FF0000";
     ctx.fill();
     ctx.closePath();
@@ -47,8 +53,9 @@ function keyDownHandler(e) {
         downPressed = true;
     } else if (e.key == "n") {
         spacePressed = true;
-        bulletsX = shipX;
-        bulletsY = shipY;
+
+    // same here, factorisation via l'objet
+        Player.getInstance().shoot();
     }
 }
 
@@ -157,6 +164,7 @@ function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // création / Mise à jour position vaisseau
+    let player = Player.getInstance();
     drawPlayer();
     // context.drawImage(img, shipX, shipY);
 
@@ -177,28 +185,27 @@ function draw() {
     // Création des tirs, Stockage dans un tableau
 
     if (spacePressed && count % 7 == 0) {
-        let bullets = new Entity(shipX, shipY, 8);
-        bulletsTab.push(bullets);
+        player.shoot();
     }
 
     // Fonction mise à jour de la position du vaisseau en fonction des touches pressées
 
     if (upPressed && rightPressed) {
-        ship.move("upright");
+        player.move("upright");
     } else if (upPressed && leftPressed) {
-        ship.move("upleft");
+        player.move("upleft");
     } else if (downPressed && rightPressed) {
-        ship.move("downright");
+        player.move("downright");
     } else if (downPressed && leftPressed) {
-        ship.move("downleft");
+        player.move("downleft");
     } else if (rightPressed) {
-        ship.move("right");
+        player.move("right");
     } else if (leftPressed) {
-        ship.move("left");
+        player.move("left");
     } else if (upPressed) {
-        ship.move("up");
+        player.move("up");
     } else if (downPressed) {
-        ship.move("down");
+        player.move("down");
     }
 
     // Compteur de frames
