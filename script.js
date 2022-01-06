@@ -1,4 +1,7 @@
-import Entity, {Player, Bullets} from './modules.js/entity'
+import Entity from './modules.js/entity'
+import Player from './modules.js/player'
+import Ennemy from './modules.js/ennemy';
+import Bullets from './modules.js/bullets';
 // il faut importer chaque classe séparément. Ici :
 // 'Entity' car l'export d'Entity a une propriété default
 // et à l'inverse '{Player}' car pas de propriété default
@@ -157,6 +160,7 @@ function isCollision(tab1, tab2) {
 /*==================== FONCTIONS BOUCLE DE JEU ======================================*/
 
 function draw() {
+    let bob = new Ennemy(50, 50);
 
     // Remise à zéro du canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -213,5 +217,3 @@ function draw() {
 
 // Creations des frames toutes les 16 millisecondes
 setInterval(draw, 16);
-
-export { canvas }
