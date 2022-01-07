@@ -1,6 +1,7 @@
 import Player from './modules.js/player'
 import Enemy from './modules.js/enemy';
 import Bullets from './modules.js/bullets';
+import Minion from './modules.js/ennemies/minion';
 
 /*============= VARIABLES ============================*/
 let scoreDisplay = document.getElementById('score');
@@ -162,10 +163,10 @@ function loop() {
         }
     }
 
-    if (count % 1000 == 0) {
+    if (count % 500 == 0) {
         rndX = Math.round(Math.random() * 1180);
         rndY = 0;
-        new Enemy(rndX, rndY, 8);
+        new Minion(rndX, rndY);
     }
 
     // Création des tirs, Stockage dans un tableau

@@ -8,8 +8,10 @@ let scoreDisplay = document.getElementById('score');
 class Enemy extends Entity {
     static count = 0;
     static enemyTab = [];
-    constructor(posX, posY, hp) {
-        super(posX, posY, 25, 10);
+    constructor(posX, posY,radius, speed, hp) {
+        super(posX, posY);
+        this.radius = radius;
+        this.speed = speed;
         this.hp = hp;
         this.id = Enemy.count;
         Enemy.count ++;
@@ -39,8 +41,7 @@ class Enemy extends Entity {
         if (this.hp == 0) {
             Player.score += 1;
             scoreDisplay.innerHTML = Player.score;
-            this.delete();
-            console.log(Enemy.enemyTab);    
+            this.delete();  
         }
     }
 
