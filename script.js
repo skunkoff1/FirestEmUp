@@ -1,11 +1,14 @@
 import Player from './modules.js/player'
 import Enemy from './modules.js/enemy';
 import Bullets from './modules.js/bullets';
+import Minion from './modules.js/ennemies/minion';
+import Boss1 from './modules.js/ennemies/boss1';
 
 /*============= VARIABLES ============================*/
 let scoreDisplay = document.getElementById('score');
 let img = document.getElementById("myImage");
-let enemyImg = document.getElementById("enemyIcon");
+let enemyImg = document.getElementById("enemyImg");
+let bossImg = document.getElementById("bossImg");
 let info = document.getElementById('infoGames');
 var canvas = document.querySelector('canvas');
 var ctx = canvas.getContext('2d');
@@ -18,12 +21,14 @@ var dy = 1;
 let count = 0;
 let rndX;
 let rndY;
+var game = null;
 scoreDisplay.innerHTML = 0;
 
 /*================= afficher les entités =========*/
 
 enemyImg.style.display = "none";
 img.style.display = "none";
+bossImg.style.display = "none";
 
 function drawPlayer() {
     // update du drawPlayer, il a simplement a récupérer les coordonnées actuelles
@@ -101,37 +106,26 @@ function moveBullets(tab) {
 /*================== FONCTIONS ENNEMIS =============================*/
 
 function drawEnemies() {
-    for (let i = 0; i < Enemy.enemyTab.length; i++) {
+    
+    for (let m = 0; m< Enemy.enemyTab[0].length  ;m++) {
         ctx.beginPath();
-        ctx.drawImage(enemyImg, Enemy.enemyTab[i].posX-25, Enemy.enemyTab[i].posY-27, 50, 54);
+        ctx.drawImage(enemyImg, Enemy.enemyTab[0][m].posX-25, Enemy.enemyTab[0][m].posY-25, 50, 50);
         ctx.closePath();
     }
+    for(let b = 0;b<Enemy.enemyTab[1].length ; b++) {
+        ctx.beginPath();
+        ctx.drawImage(bossImg, Enemy.enemyTab[1][b].posX-150, Enemy.enemyTab[1][b].posY-150, 300, 300);
+        ctx.closePath();
+    }
+    
 }
 
-function moveEnemies(tab) {
-    for (let i = 0; i < tab.length; i++) {
-        tab[i].posY += getNextMove()*5;
-        tab[i].posX += getNextMove()*5;
+function moveEnemies() {
+    for (let i = 0; i < Enemy.enemyTab.length; i++) {
+        for (let j = 0; j< Enemy.enemyTab[i].length ; j++) {
+            Enemy.enemyTab[i][j].getNextMove();
+        }
     }
-}
-
-function getNextMove() {
-    let output = 0;
-    let answer = Math.floor(Math.random() * 3);
-    switch (answer) {
-        case 0 :
-            output = -1;
-            break;
-        case 1 :
-            output = 0;
-            break;
-        case 2 :
-            output = 1;
-            break;
-        default :
-            console.log("Erreur in getNextMove() switch");
-    }
-    return output;
 }
 
 /*====================== FONCTIONS GESTION DES HITBOXES =============================*/
@@ -152,7 +146,10 @@ function isCollision(entity, tab) {
 
 /*==================== FONCTIONS BOUCLE DE JEU ======================================*/
 
-function draw() {
+function loop() {
+    if (Player.inGame == false) {
+        clearInterval(game);
+    } 
     // Remise à zéro du canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -161,32 +158,37 @@ function draw() {
     drawPlayer();
     // context.drawImage(img, shipX, shipY);
     for (let i = 0; i<Enemy.enemyTab.length;i++) {
-        isCollision(Enemy.enemyTab[i], Bullets.goodBullets);
+        for (let j = 0; j<Enemy.enemyTab[i].length;j++) {
+            isCollision(Enemy.enemyTab[i][j], Bullets.goodBullets);
+        }
     }
     isCollision(player, Bullets.badBullets);
-    moveEnemies(Enemy.enemyTab);
+    moveEnemies();
     drawEnemies();
     moveBullets(Bullets.goodBullets);
     moveBullets(Bullets.badBullets);
     drawBullets();
 
-    // Création d'ennemis toutes les 60 frames (1sec), Stockage dans un tableau
+    // actions les 60 frames (1sec), Stockage dans un tableau
     if (count % 60 == 0) {
-        if (Player.inGame == false) {
-            clearInterval(game);
-        }
+        
         for (let i = 0; i<Enemy.enemyTab.length;i++) {
-            Enemy.enemyTab[i].shoot();
+            for (let j = 0; j<Enemy.enemyTab[i].length ; j++) {
+                Enemy.enemyTab[i][j].shoot();
+            }
         }
     }
 
-    if (count % 200 == 0) {
-        rndX = Math.round(Math.random() * 1180);
-        rndY = 0;
-        let enemy = new Enemy(rndX, rndY, 8);
+    // if (count % 200 == 0) {
+    //     rndX = Math.round(Math.random() * 1180);
+    //     rndY = 0;
+    //     new Minion(rndX, rndY);
+    // }
+    if (count % 50000 == 0) {
+        new Boss1(600, 160);
     }
 
-    // Création des tirs, Stockage dans un tableau
+    //Création des tirs, Stockage dans un tableau
 
     if (spacePressed && count % 7 == 0) {
         player.shoot();
@@ -218,4 +220,9 @@ function draw() {
 }
 
 // Creations des frames toutes les 16 millisecondes
-var game = setInterval(draw, 16);
+function gameLaunch() {
+    game = setInterval(loop, 16);
+    Player.inGame = true;
+}
+
+gameLaunch();

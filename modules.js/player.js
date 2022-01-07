@@ -3,14 +3,15 @@ import Bullets from './bullets';
 
 export default class Player extends Entity {
 
-    static inGame = true;
+    static inGame = false;
     static score = 0;
     // singleton, instance unique de la classe Player qui modélise le vaisseau du joueur
     static instance = null;
 
     // on utilise des entrées par défaut pour la création du vaisseau joueur
     constructor() {
-        super(600, 600, 25, 7);
+        super(600, 450, 25, 7);
+        this.hp = 3;
     }
 
     // fonction d'accès au singleton ou vaisseau joueur
