@@ -18,6 +18,7 @@ var dy = 1;
 let count = 0;
 let rndX;
 let rndY;
+var game = null;
 scoreDisplay.innerHTML = 0;
 
 /*================= afficher les entités =========*/
@@ -108,30 +109,10 @@ function drawEnemies() {
     }
 }
 
-function moveEnemies(tab) {
-    for (let i = 0; i < tab.length; i++) {
-        tab[i].posY += getNextMove()*5;
-        tab[i].posX += getNextMove()*5;
+function moveEnemies() {
+    for (let i = 0; i < Enemy.enemyTab.length; i++) {
+        Enemy.enemyTab[i].getNextMove();
     }
-}
-
-function getNextMove() {
-    let output = 0;
-    let answer = Math.floor(Math.random() * 3);
-    switch (answer) {
-        case 0 :
-            output = -1;
-            break;
-        case 1 :
-            output = 0;
-            break;
-        case 2 :
-            output = 1;
-            break;
-        default :
-            console.log("Erreur in getNextMove() switch");
-    }
-    return output;
 }
 
 /*====================== FONCTIONS GESTION DES HITBOXES =============================*/
@@ -155,7 +136,7 @@ function isCollision(entity, tab) {
 function loop() {
     if (Player.inGame == false) {
         clearInterval(game);
-    }
+    } 
     // Remise à zéro du canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -167,13 +148,13 @@ function loop() {
         isCollision(Enemy.enemyTab[i], Bullets.goodBullets);
     }
     isCollision(player, Bullets.badBullets);
-    moveEnemies(Enemy.enemyTab);
+    moveEnemies();
     drawEnemies();
     moveBullets(Bullets.goodBullets);
     moveBullets(Bullets.badBullets);
     drawBullets();
 
-    // Création d'ennemis toutes les 60 frames (1sec), Stockage dans un tableau
+    // actions les 60 frames (1sec), Stockage dans un tableau
     if (count % 60 == 0) {
         
         for (let i = 0; i<Enemy.enemyTab.length;i++) {
@@ -181,10 +162,10 @@ function loop() {
         }
     }
 
-    if (count % 200 == 0) {
+    if (count % 1000 == 0) {
         rndX = Math.round(Math.random() * 1180);
         rndY = 0;
-        let enemy = new Enemy(rndX, rndY, 8);
+        new Enemy(rndX, rndY, 8);
     }
 
     // Création des tirs, Stockage dans un tableau
@@ -219,4 +200,9 @@ function loop() {
 }
 
 // Creations des frames toutes les 16 millisecondes
-var game = setInterval(loop, 16);
+function gameLaunch() {
+    game = setInterval(loop, 16);
+    Player.inGame = true;
+}
+
+gameLaunch();

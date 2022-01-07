@@ -26,9 +26,11 @@ class Enemy extends Entity {
     getNextMove() {
         if (this.currentMove == null || this.currentMove.length <= this.state) {
             this.state = 0;
-            this.currentMove = patterns[Math.floor(Math.random(patterns.length))];
+            this.currentMove = patterns[Math.floor(Math.random()*patterns.length)];
+            console.log(this.currentMove);
         }
-        this.move(currentMove([this.state]));
+        this.move(this.currentMove[this.state]);
+        console.log("moving "+this.currentMove[this.state]);
         this.state ++;
     }
 
