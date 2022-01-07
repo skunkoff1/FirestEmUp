@@ -8,4 +8,3 @@ const patterns = [
 ]
 
 export default patterns;
-export {newConst};

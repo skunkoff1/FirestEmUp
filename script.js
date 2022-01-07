@@ -2,11 +2,13 @@ import Player from './modules.js/player'
 import Enemy from './modules.js/enemy';
 import Bullets from './modules.js/bullets';
 import Minion from './modules.js/ennemies/minion';
+import Boss1 from './modules.js/ennemies/boss1';
 
 /*============= VARIABLES ============================*/
 let scoreDisplay = document.getElementById('score');
 let img = document.getElementById("myImage");
-let enemyImg = document.getElementById("enemyIcon");
+let enemyImg = document.getElementById("enemyImg");
+let bossImg = document.getElementById("bossImg");
 let info = document.getElementById('infoGames');
 var canvas = document.querySelector('canvas');
 var ctx = canvas.getContext('2d');
@@ -26,6 +28,7 @@ scoreDisplay.innerHTML = 0;
 
 enemyImg.style.display = "none";
 img.style.display = "none";
+bossImg.style.display = "none";
 
 function drawPlayer() {
     // update du drawPlayer, il a simplement a récupérer les coordonnées actuelles
@@ -103,16 +106,25 @@ function moveBullets(tab) {
 /*================== FONCTIONS ENNEMIS =============================*/
 
 function drawEnemies() {
-    for (let i = 0; i < Enemy.enemyTab.length; i++) {
+    
+    for (let m = 0; m< Enemy.enemyTab[0].length  ;m++) {
         ctx.beginPath();
-        ctx.drawImage(enemyImg, Enemy.enemyTab[i].posX-25, Enemy.enemyTab[i].posY-27, 50, 54);
+        ctx.drawImage(enemyImg, Enemy.enemyTab[0][m].posX-25, Enemy.enemyTab[0][m].posY-25, 50, 50);
         ctx.closePath();
     }
+    for(let b = 0;b<Enemy.enemyTab[1].length ; b++) {
+        ctx.beginPath();
+        ctx.drawImage(bossImg, Enemy.enemyTab[1][b].posX-150, Enemy.enemyTab[1][b].posY-150, 300, 300);
+        ctx.closePath();
+    }
+    
 }
 
 function moveEnemies() {
     for (let i = 0; i < Enemy.enemyTab.length; i++) {
-        Enemy.enemyTab[i].getNextMove();
+        for (let j = 0; j< Enemy.enemyTab[i].length ; j++) {
+            Enemy.enemyTab[i][j].getNextMove();
+        }
     }
 }
 
@@ -146,7 +158,9 @@ function loop() {
     drawPlayer();
     // context.drawImage(img, shipX, shipY);
     for (let i = 0; i<Enemy.enemyTab.length;i++) {
-        isCollision(Enemy.enemyTab[i], Bullets.goodBullets);
+        for (let j = 0; j<Enemy.enemyTab[i].length;j++) {
+            isCollision(Enemy.enemyTab[i][j], Bullets.goodBullets);
+        }
     }
     isCollision(player, Bullets.badBullets);
     moveEnemies();
@@ -159,17 +173,22 @@ function loop() {
     if (count % 60 == 0) {
         
         for (let i = 0; i<Enemy.enemyTab.length;i++) {
-            Enemy.enemyTab[i].shoot();
+            for (let j = 0; j<Enemy.enemyTab[i].length ; j++) {
+                Enemy.enemyTab[i][j].shoot();
+            }
         }
     }
 
-    if (count % 500 == 0) {
-        rndX = Math.round(Math.random() * 1180);
-        rndY = 0;
-        new Minion(rndX, rndY);
+    // if (count % 200 == 0) {
+    //     rndX = Math.round(Math.random() * 1180);
+    //     rndY = 0;
+    //     new Minion(rndX, rndY);
+    // }
+    if (count % 50000 == 0) {
+        new Boss1(600, 160);
     }
 
-    // Création des tirs, Stockage dans un tableau
+    //Création des tirs, Stockage dans un tableau
 
     if (spacePressed && count % 7 == 0) {
         player.shoot();

@@ -7,7 +7,10 @@ let scoreDisplay = document.getElementById('score');
 
 class Enemy extends Entity {
     static count = 0;
-    static enemyTab = [];
+    static enemyTab = [
+        [],
+        []
+    ];
     constructor(posX, posY,radius, speed, hp) {
         super(posX, posY);
         this.radius = radius;
@@ -15,9 +18,9 @@ class Enemy extends Entity {
         this.hp = hp;
         this.id = Enemy.count;
         Enemy.count ++;
-        Enemy.enemyTab.push(this);
         this.currentMove = null;
         this.getNextMove();
+        this.push();
     }
 
     shoot() {
@@ -39,16 +42,28 @@ class Enemy extends Entity {
     damage() {
         this.hp -= 1;
         if (this.hp == 0) {
-            Player.score += 1;
+            this.addScore();
             scoreDisplay.innerHTML = Player.score;
             this.delete();  
         }
     }
 
+    addScore() {
+        Player.score += 10;
+    }
+
+    push() {
+        // ajouter un enemy a son tableau spécifique
+    }
+
     delete() {
         for (let i = 0; i<Enemy.enemyTab.length;i++) {
-            if(this.id == Enemy.enemyTab[i].id) {
-                Enemy.enemyTab.splice(i,1);
+            for (let j = 0; j<Enemy.enemyTab[i].length;j++) {
+                if(this.id == Enemy.enemyTab[i][j].id) {
+                    Enemy.enemyTab[i].splice(j,1);
+                    delete this;
+                    return;
+                }
             }
         }
     }

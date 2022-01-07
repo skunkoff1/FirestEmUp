@@ -10,7 +10,7 @@ export default class Player extends Entity {
 
     // on utilise des entrées par défaut pour la création du vaisseau joueur
     constructor() {
-        super(600, 300, 25, 7);
+        super(600, 450, 25, 7);
         this.hp = 3;
     }
 
