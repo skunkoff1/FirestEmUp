@@ -3,7 +3,7 @@ import Bullets from './bullets';
 
 export default class Player extends Entity {
 
-    static inGame = true;
+    static inGame = false;
     static score = 0;
     // singleton, instance unique de la classe Player qui modélise le vaisseau du joueur
     static instance = null;
