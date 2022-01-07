@@ -35,7 +35,7 @@ function drawPlayer() {
     // du singleton pour l'afficher
     let entity = Player.getInstance();
     ctx.beginPath();
-    ctx.drawImage(img, entity.posX-25, entity.posY-27, 50, 54);
+    ctx.drawImage(img, entity.posX - 25, entity.posY - 27, 50, 54);
     ctx.closePath();
 }
 
@@ -56,7 +56,7 @@ function keyDownHandler(e) {
     } else if (e.key == "n") {
         spacePressed = true;
 
-    // same here, factorisation via l'objet
+        // same here, factorisation via l'objet
         Player.getInstance().shoot();
         Player.getInstance().speed = 4;
     }
@@ -83,14 +83,14 @@ function keyUpHandler(e) {
 function drawBullets() {
     for (let i = 0; i < Bullets.goodBullets.length; i++) {
         ctx.beginPath();
-        ctx.arc(Bullets.goodBullets[i].posX, Bullets.goodBullets[i].posY, Bullets.goodBullets[i].radius, 0, Math.PI*2, true);
+        ctx.arc(Bullets.goodBullets[i].posX, Bullets.goodBullets[i].posY, Bullets.goodBullets[i].radius, 0, Math.PI * 2, true);
         ctx.fillStyle = "#ffe436";
         ctx.fill();
         ctx.closePath();
     }
     for (let j = 0; j < Bullets.badBullets.length; j++) {
         ctx.beginPath();
-        ctx.arc(Bullets.badBullets[j].posX, Bullets.badBullets[j].posY, Bullets.badBullets[j].radius, 0, Math.PI*2, true);
+        ctx.arc(Bullets.badBullets[j].posX, Bullets.badBullets[j].posY, Bullets.badBullets[j].radius, 0, Math.PI * 2, true);
         ctx.fillStyle = "#90ee90";
         ctx.fill();
         ctx.closePath();
@@ -106,23 +106,23 @@ function moveBullets(tab) {
 /*================== FONCTIONS ENNEMIS =============================*/
 
 function drawEnemies() {
-    
-    for (let m = 0; m< Enemy.enemyTab[0].length  ;m++) {
+
+    for (let m = 0; m < Enemy.enemyTab[0].length; m++) {
         ctx.beginPath();
-        ctx.drawImage(enemyImg, Enemy.enemyTab[0][m].posX-25, Enemy.enemyTab[0][m].posY-25, 50, 50);
+        ctx.drawImage(enemyImg, Enemy.enemyTab[0][m].posX - 25, Enemy.enemyTab[0][m].posY - 25, 50, 50);
         ctx.closePath();
     }
-    for(let b = 0;b<Enemy.enemyTab[1].length ; b++) {
+    for (let b = 0; b < Enemy.enemyTab[1].length; b++) {
         ctx.beginPath();
-        ctx.drawImage(bossImg, Enemy.enemyTab[1][b].posX-150, Enemy.enemyTab[1][b].posY-150, 300, 300);
+        ctx.drawImage(bossImg, Enemy.enemyTab[1][b].posX - 150, Enemy.enemyTab[1][b].posY - 150, 300, 300);
         ctx.closePath();
     }
-    
+
 }
 
 function moveEnemies() {
     for (let i = 0; i < Enemy.enemyTab.length; i++) {
-        for (let j = 0; j< Enemy.enemyTab[i].length ; j++) {
+        for (let j = 0; j < Enemy.enemyTab[i].length; j++) {
             Enemy.enemyTab[i][j].getNextMove();
         }
     }
@@ -149,7 +149,7 @@ function isCollision(entity, tab) {
 function loop() {
     if (Player.inGame == false) {
         clearInterval(game);
-    } 
+    }
     // Remise à zéro du canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -157,8 +157,8 @@ function loop() {
     let player = Player.getInstance();
     drawPlayer();
     // context.drawImage(img, shipX, shipY);
-    for (let i = 0; i<Enemy.enemyTab.length;i++) {
-        for (let j = 0; j<Enemy.enemyTab[i].length;j++) {
+    for (let i = 0; i < Enemy.enemyTab.length; i++) {
+        for (let j = 0; j < Enemy.enemyTab[i].length; j++) {
             isCollision(Enemy.enemyTab[i][j], Bullets.goodBullets);
         }
     }
@@ -171,20 +171,20 @@ function loop() {
 
     // actions les 60 frames (1sec), Stockage dans un tableau
     if (count % 60 == 0) {
-        
-        for (let i = 0; i<Enemy.enemyTab.length;i++) {
-            for (let j = 0; j<Enemy.enemyTab[i].length ; j++) {
+
+        for (let i = 0; i < Enemy.enemyTab.length; i++) {
+            for (let j = 0; j < Enemy.enemyTab[i].length; j++) {
                 Enemy.enemyTab[i][j].shoot();
             }
         }
     }
 
-    // if (count % 200 == 0) {
-    //     rndX = Math.round(Math.random() * 1180);
-    //     rndY = 0;
-    //     new Minion(rndX, rndY);
-    // }
-    if (count % 50000 == 0) {
+    if (count % 200 == 0) {
+        rndX = Math.round(Math.random() * 1180);
+        rndY = 0;
+        new Minion(rndX, rndY);
+    }
+    if (count % 2000 == 1999) {
         new Boss1(600, 160);
     }
 
