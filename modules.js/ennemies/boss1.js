@@ -12,9 +12,11 @@ export default class Boss1 extends Enemy {
         let bullet2 = new Bullets(this.posX-50, this.posY+100, true, "down");
         let bullet3 = new Bullets(this.posX+50, this.posY+100, true, "down");
         setTimeout(() => {
+            let bullet4 = new Bullets(this.posX-100, this.posY, true, "left");
+            let bullet10 = new Bullets(this.posX+100, this.posY, true, "right");
             let bullet5 = new Bullets(this.posX-50, this.posY+100, true, "downleft");
             let bullet6 = new Bullets(this.posX+50, this.posY+100, true, "downright");
-            Bullets.badBullets.push(bullet4, bullet5, bullet6);
+            Bullets.badBullets.push(bullet4, bullet5, bullet6, bullet10);
         }, 100);
         setTimeout(() => {
             let bullet7 = new Bullets(this.posX, this.posY+100, true, "down");

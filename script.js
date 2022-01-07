@@ -162,6 +162,9 @@ function loop() {
             isCollision(Enemy.enemyTab[i][j], Bullets.goodBullets);
         }
     }
+    for (let i = 0; i<Enemy.enemyTab.length;i++) {
+        isCollision(player, Enemy.enemyTab[i]);
+    }
     isCollision(player, Bullets.badBullets);
     moveEnemies();
     drawEnemies();
@@ -179,11 +182,11 @@ function loop() {
         }
     }
 
-    // if (count % 200 == 0) {
-    //     rndX = Math.round(Math.random() * 1180);
-    //     rndY = 0;
-    //     new Minion(rndX, rndY);
-    // }
+    if (count % 200 == 0) {
+        rndX = Math.round(Math.random() * 1180);
+        rndY = 0;
+        new Minion(rndX, rndY);
+    }
     if (count % 50000 == 0) {
         new Boss1(600, 160);
     }
