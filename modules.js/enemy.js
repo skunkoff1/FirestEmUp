@@ -1,6 +1,7 @@
 import Entity from './entity';
 import Bullets from './bullets';
 import Player from './player';
+import patterns from './assets/patterns';
 
 let scoreDisplay = document.getElementById('score');
 
@@ -13,12 +14,22 @@ class Enemy extends Entity {
         this.id = Enemy.count;
         Enemy.count ++;
         Enemy.enemyTab.push(this);
-        console.log("count = "+Enemy.count);
+        this.currentMove = null;
+        this.getNextMove();
     }
 
     shoot() {
         let bullet = new Bullets(this.posX, this.posY, true, "down");
         Bullets.badBullets.push(bullet);
+    }
+
+    getNextMove() {
+        if (this.currentMove == null || this.currentMove.length <= this.state) {
+            this.state = 0;
+            this.currentMove = patterns[Math.floor(Math.random(patterns.length))];
+        }
+        this.move(currentMove([this.state]));
+        this.state ++;
     }
 
     damage() {
