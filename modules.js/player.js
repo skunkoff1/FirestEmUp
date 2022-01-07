@@ -12,6 +12,7 @@ export default class Player extends Entity {
     constructor() {
         super(600, 450, 25, 7);
         this.hp = 3;
+        this.onHit = 5;
     }
 
     // fonction d'accès au singleton ou vaisseau joueur
@@ -23,9 +24,9 @@ export default class Player extends Entity {
         }
     }
 
-    damage() {
-        this.hp -= 1;
-        if (this.hp == 0) {
+    damage(x) {
+        this.hp -= x;
+        if (this.hp <= 0) {
             Player.inGame = false;
             alert("Game Over ! Your score : "+Player.score);
         }
@@ -33,7 +34,6 @@ export default class Player extends Entity {
 
     // fonction de tir, qui instancie une bullet a la position actuelle
     shoot() {
-        let bullet = new Bullets(this.posX, this.posY, false, "up");
-        Bullets.goodBullets.push(bullet);
+        new Bullets(this.posX, this.posY, false, "up");
     }
 }

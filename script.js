@@ -138,8 +138,10 @@ function isCollision(entity, tab) {
         let dist = Math.sqrt(dx * dx + dy * dy);
 
         if (dist < entity.radius + tab[i].radius) {
-            tab.splice(i, 1);
-            entity.damage();
+            entity.damage(tab[i].onHit);
+            if (tab[i] instanceof Bullets) {
+                tab.splice(i,1);
+            }
         }
     }
 }
@@ -165,19 +167,21 @@ function loop() {
     for (let i = 0; i<Enemy.enemyTab.length;i++) {
         isCollision(player, Enemy.enemyTab[i]);
     }
-    isCollision(player, Bullets.badBullets);
     moveEnemies();
     drawEnemies();
     moveBullets(Bullets.goodBullets);
     moveBullets(Bullets.badBullets);
     drawBullets();
+    isCollision(player, Bullets.badBullets);
 
     // actions les 60 frames (1sec), Stockage dans un tableau
     if (count % 60 == 0) {
 
         for (let i = 0; i < Enemy.enemyTab.length; i++) {
             for (let j = 0; j < Enemy.enemyTab[i].length; j++) {
-                Enemy.enemyTab[i][j].shoot();
+                setTimeout(() => {
+                    Enemy.enemyTab[i][j].shoot();
+                }, Math.floor(Math.random()*1000));
             }
         }
     }

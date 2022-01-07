@@ -8,14 +8,15 @@ let scoreDisplay = document.getElementById('score');
 class Enemy extends Entity {
     static count = 0;
     static enemyTab = [
-        [],
-        []
+        [], // minions subArray
+        [] // boss subArray
     ];
-    constructor(posX, posY,radius, speed, hp) {
+    constructor(posX, posY,radius, speed, hp, onHit) {
         super(posX, posY);
         this.radius = radius;
         this.speed = speed;
         this.hp = hp;
+        this.onHit = onHit;
         this.id = Enemy.count;
         Enemy.count ++;
         this.currentMove = null;
@@ -24,8 +25,7 @@ class Enemy extends Entity {
     }
 
     shoot() {
-        let bullet = new Bullets(this.posX, this.posY, true, "down");
-        Bullets.badBullets.push(bullet);
+        new Bullets(this.posX, this.posY, true, "down");
     }
 
     getNextMove() {
