@@ -10,20 +10,15 @@ export default class Targeted extends Bullets {
     }
 
     move() {
-        if (this.vector < 0) {
-            this.posX -= Math.floor(Math.sqrt(Math.pow(this.speed,2)/Math.abs(this.vector)+1));
-            console.log("left : "+this.posX);
-        } else {
-            this.posX += Math.floor(Math.sqrt(Math.pow(this.speed,2)/this.vector+1));
-        }
-        this.posY += this.vector*Math.floor(Math.sqrt(Math.pow(this.speed,2)/this.vector+1));
+        
+        this.posX += this.vector*Math.floor(Math.sqrt(Math.pow(this.speed,2)/Math.pow(this.vector+1,2)));
+        
+        this.posY += Math.floor(Math.sqrt(Math.pow(this.speed,2)/Math.pow(this.vector+1,2)));
     }
 
     getVector() {
-        if (this.target.posX<this.posX) {
-            this.vector = (this.posX - this.target.posX) / (this.posY - this.target.posX);
-        } else {
-            this.vector = (this.target.posY-this.posY) / (this.target.posX-this.posX);
-        }
+        
+        this.vector = (this.target.posX-this.posX) / (this.target.posY-this.posY);
+        
     }
 }
