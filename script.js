@@ -191,9 +191,9 @@ function loop() {
         rndY = 0;
         new Minion(rndX, rndY);
     }
-    if (count % 50000 == 0) {
-        new Boss1(600, 160);
-    }
+    // if (count % 50000 == 0) {
+    //     new Boss1(600, 160);
+    // }
 
     //Création des tirs, Stockage dans un tableau
 

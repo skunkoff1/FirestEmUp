@@ -29,7 +29,7 @@ export default class Bullets extends Entity {
     damage(x) {
         this.hp -= x;
         if (this.hp <= 0) {
-            this.delete;
+            this.delete();
         }
     }
 

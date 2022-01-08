@@ -1,4 +1,6 @@
 import Enemy from '../enemy'
+import Targeted from '../bulletTypes/targeted';
+import Player from '../player';
 
 export default class Minion extends Enemy {
     constructor(posX, posY) {
@@ -7,5 +9,9 @@ export default class Minion extends Enemy {
 
     push() {
         Enemy.enemyTab[0].push(this);
+    }
+
+    shoot() {
+        new Targeted(this.posX, this.posY, true, Player.getInstance());
     }
 }
