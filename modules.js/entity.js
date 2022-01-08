@@ -11,17 +11,40 @@ export default class Entity {
 
     // factorisation du déplacement (chaque entité peut l'utiliser maintenant)
     move(direction) {
-        if (direction.includes("up")) {
-            this.posY -= this.speed;
-        }
-        if (direction.includes("down")) {
-            this.posY+= this.speed;
-        }
-        if (direction.includes("left")) {
-            this.posX -= this.speed;
-        }
-        if (direction.includes("right")) {
-            this.posX += this.speed;
+
+        let diag = this.speed/Math.sqrt(2);
+        
+        switch(direction) {
+            case "up":
+                this.posY -= this.speed;
+                break;
+            case "down":
+                this.posY += this.speed;
+                break;
+            case "left":
+                this.posX -= this.speed;
+                break;
+            case "right":
+                this.posX += this.speed;
+                break;
+            case "upleft":
+                this.posY -= diag;
+                this.posX -= diag;
+                break;
+            case "upright":
+                this.posY -= diag;
+                this.posX += diag;
+                break;
+            case "downleft":
+                this.posY += diag;
+                this.posX -= diag;
+                break;
+            case "downright":
+                this.posY += diag;
+                this.posX += diag;
+                break;
+            default :
+                console.log("default reached in entity.move switch");
         }
         this.isWall();
     }
