@@ -10,6 +10,7 @@ class Enemy extends Entity {
     static count = 0;
     static enemyTab = [
         [], // minions subArray
+        [], // snipers subArray
         [] // boss subArray
     ];
     constructor(posX, posY,radius, speed, hp, onHit) {

@@ -43,6 +43,10 @@ export default class Entity {
                 this.posY += diag;
                 this.posX += diag;
                 break;
+            case " ":
+                this.posY = this.posY;
+                this.posX = this.posX;
+                break;
             default :
                 console.log("default reached in entity.move switch");
         }

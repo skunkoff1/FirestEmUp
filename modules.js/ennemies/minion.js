@@ -11,7 +11,4 @@ export default class Minion extends Enemy {
         Enemy.enemyTab[0].push(this);
     }
 
-    shoot() {
-        new Targeted(this.posX, this.posY, true, Player.getInstance());
-    }
 }
