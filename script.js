@@ -4,6 +4,7 @@ import Bullets from './modules.js/bullets';
 import Minion from './modules.js/ennemies/minion';
 import Boss1 from './modules.js/ennemies/boss1';
 import Sniper from './modules.js/ennemies/sniper';
+import { displayPlayerHp } from './modules.js/assets/infoBar';
 
 /*============= VARIABLES ============================*/
 let scoreDisplay = document.getElementById('score');
@@ -158,6 +159,8 @@ function isCollision(entity, tab) {
     }
 }
 
+displayPlayerHp(3);
+
 /*==================== FONCTIONS BOUCLE DE JEU ======================================*/
 
 function loop() {
@@ -165,7 +168,7 @@ function loop() {
         clearInterval(game);
     }
     // Remise à zéro du canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);   
 
     // création / Mise à jour position vaisseau
     let player = Player.getInstance();

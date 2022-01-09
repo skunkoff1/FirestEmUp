@@ -15,6 +15,10 @@ export default class Player extends Entity {
         this.onHit = 5;
     }
 
+    get gethp() {
+        return this.hp;
+    }
+
     // fonction d'accès au singleton ou vaisseau joueur
     static getInstance() {
         if (Player.instance == null) {
