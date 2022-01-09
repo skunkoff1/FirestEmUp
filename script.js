@@ -3,6 +3,7 @@ import Enemy from './modules.js/enemy';
 import Bullets from './modules.js/bullets';
 import Minion from './modules.js/ennemies/minion';
 import Boss1 from './modules.js/ennemies/boss1';
+import Sniper from './modules.js/ennemies/sniper';
 
 /*============= VARIABLES ============================*/
 let scoreDisplay = document.getElementById('score');
@@ -107,14 +108,25 @@ function moveBullets(tab) {
 
 function drawEnemies() {
 
+    // affiche les minions
     for (let m = 0; m < Enemy.enemyTab[0].length; m++) {
         ctx.beginPath();
         ctx.drawImage(enemyImg, Enemy.enemyTab[0][m].posX - 25, Enemy.enemyTab[0][m].posY - 25, 50, 50);
         ctx.closePath();
     }
-    for (let b = 0; b < Enemy.enemyTab[1].length; b++) {
+
+    // affiche les snipers
+    for (let s = 0; s < Enemy.enemyTab[1].length; s++) {
         ctx.beginPath();
-        ctx.drawImage(bossImg, Enemy.enemyTab[1][b].posX - 150, Enemy.enemyTab[1][b].posY - 150, 300, 300);
+        ctx.drawImage(enemyImg, Enemy.enemyTab[1][s].posX - Enemy.enemyTab[1][s].radius, Enemy.enemyTab[1][s].posY - Enemy.enemyTab[1][s].radius, Enemy.enemyTab[1][s].radius*2, Enemy.enemyTab[1][s].radius*2);
+        ctx.closePath();
+    }
+
+    // affiche les boss, seront toujours le dernier sous tableau de enemyTab
+    for (let b = 0; b < Enemy.enemyTab[Enemy.enemyTab.length-1].length; b++) {
+        let current = Enemy.enemyTab[Enemy.enemyTab.length-1][b];
+        ctx.beginPath();
+        ctx.drawImage(bossImg, current.posX - current.radius, current.posY - current.radius, current.radius*2, current.radius*2);
         ctx.closePath();
     }
 
@@ -138,8 +150,10 @@ function isCollision(entity, tab) {
         let dist = Math.sqrt(dx * dx + dy * dy);
 
         if (dist < entity.radius + tab[i].radius) {
-            tab.splice(i, 1);
-            entity.damage();
+            entity.damage(tab[i].onHit);
+            if (tab[i] instanceof Bullets) {
+                tab.splice(i,1);
+            }
         }
     }
 }
@@ -162,31 +176,37 @@ function loop() {
             isCollision(Enemy.enemyTab[i][j], Bullets.goodBullets);
         }
     }
-    isCollision(player, Bullets.badBullets);
+    for (let i = 0; i<Enemy.enemyTab.length;i++) {
+        isCollision(player, Enemy.enemyTab[i]);
+    }
     moveEnemies();
     drawEnemies();
     moveBullets(Bullets.goodBullets);
     moveBullets(Bullets.badBullets);
     drawBullets();
+    isCollision(player, Bullets.badBullets);
 
     // actions les 60 frames (1sec), Stockage dans un tableau
     if (count % 60 == 0) {
 
         for (let i = 0; i < Enemy.enemyTab.length; i++) {
             for (let j = 0; j < Enemy.enemyTab[i].length; j++) {
-                Enemy.enemyTab[i][j].shoot();
+                setTimeout(() => {
+                    Enemy.enemyTab[i][j].shoot();
+                }, Math.floor(Math.random()*1000));
             }
         }
     }
 
-    if (count % 200 == 0) {
+    if (count % 200000 == 0) {
         rndX = Math.round(Math.random() * 1180);
         rndY = 0;
         new Minion(rndX, rndY);
+        new Sniper(rndX, rndY);
     }
-    if (count % 2000 == 1999) {
-        new Boss1(600, 160);
-    }
+    // if (count % 50000 == 0) {
+    //     new Boss1(600, 160);
+    // }
 
     //Création des tirs, Stockage dans un tableau
 

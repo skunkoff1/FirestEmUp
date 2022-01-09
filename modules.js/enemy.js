@@ -3,39 +3,40 @@ import Bullets from './bullets';
 import Player from './player';
 import patterns from './assets/patterns';
 
+
 let scoreDisplay = document.getElementById('score');
 
 class Enemy extends Entity {
     static count = 0;
     static enemyTab = [
-        [],
-        []
+        [], // minions subArray
+        [], // snipers subArray
+        [] // boss subArray
     ];
-    constructor(posX, posY,radius, speed, hp) {
+    constructor(posX, posY,radius, speed, hp, onHit) {
         super(posX, posY);
         this.radius = radius;
         this.speed = speed;
         this.hp = hp;
+        this.onHit = onHit;
         this.id = Enemy.count;
         Enemy.count ++;
+        this.bottomBorder = Entity.canvas.height - Player.getInstance().radius*2.1;
         this.currentMove = null;
         this.getNextMove();
         this.push();
     }
 
     shoot() {
-        let bullet = new Bullets(this.posX, this.posY, true, "down");
-        Bullets.badBullets.push(bullet);
+        new Bullets(this.posX, this.posY, true, "down");
     }
 
     getNextMove() {
         if (this.currentMove == null || this.currentMove.length <= this.state) {
             this.state = 0;
             this.currentMove = patterns[Math.floor(Math.random()*patterns.length)];
-            console.log(this.currentMove);
         }
         this.move(this.currentMove[this.state]);
-        console.log("moving "+this.currentMove[this.state]);
         this.state ++;
     }
 
