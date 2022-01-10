@@ -32,13 +32,20 @@ export default class Targeted extends Bullets {
 /*
 WorkInProgress : improved target algorithm
 
-angle = Math.atan2(this.target.posY - this.posY, this.target.posX - this.posX);
+angle = Math.atan2(this.target.posY - this.posY, this.target.posX - this.posX) * 180 / Math.PI;
+
+if (Player.getInstance.posX < this.posX) {
+
+} else {
+
+}
 
 vX = this.speed*Math.cos(angle);
 vY = this.speed*Math.sin(angle);
 
 this.posX += vX;
 this.posY += vY;
+
 
 
 
