@@ -15,14 +15,14 @@ canvas {
     font-size: 40px;
     display: flex;
     justify-content: space-between;
-    height:80px;
-    background-color:black;
+    height: 80px;
+    background-color: black;
     border: 5px solid yellow;
-    color:white;
+    color: white;
     align-items: center;
 }
 
-p {
+viyfvugvugvujig p {
     padding: 0 20px;
 }
 
@@ -32,10 +32,10 @@ p {
 }
 
 .displayHp {
-    width:35px;
-    height:35px;
+    width: 35px;
+    height: 35px;
     background-color: red;
-    border-radius:50%;
+    border-radius: 50%;
     margin: 0 10px;
 }
 
