@@ -1,5 +1,6 @@
 export function displayPlayerHp(hp) {    
     let power = document.getElementById('power');
+    power.innerHTML = "";
 
     for(let i=0; i<hp; i++) {
         let displayHp = document.createElement('div');

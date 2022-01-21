@@ -10,13 +10,9 @@ export default class Player extends Entity {
 
     // on utilise des entrées par défaut pour la création du vaisseau joueur
     constructor() {
-        super(600, 450, 25, 7);
+        super(600, 700, 25, 7);
         this.hp = 3;
         this.onHit = 5;
-    }
-
-    get gethp() {
-        return this.hp;
     }
 
     // fonction d'accès au singleton ou vaisseau joueur
@@ -32,7 +28,6 @@ export default class Player extends Entity {
         this.hp -= x;
         if (this.hp <= 0) {
             Player.inGame = false;
-            alert("Game Over ! Your score : " + Player.score);
         }
     }
 

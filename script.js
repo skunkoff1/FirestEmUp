@@ -1,17 +1,19 @@
 import Player from './modules.js/player'
 import Enemy from './modules.js/enemy';
 import Bullets from './modules.js/bullets';
-import Minion from './modules.js/ennemies/minion';
-import Boss1 from './modules.js/ennemies/boss1';
-import Sniper from './modules.js/ennemies/sniper';
 import { displayPlayerHp } from './modules.js/assets/infoBar';
+import Stage from './modules.js/stage';
 
 /*============= VARIABLES ============================*/
+
 let scoreDisplay = document.getElementById('score');
+let startBtn = document.getElementById("pressStart");
 let img = document.getElementById("myImage");
 let enemyImg = document.getElementById("enemyImg");
 let bossImg = document.getElementById("bossImg");
 let info = document.getElementById('infoGames');
+let pause = document.getElementById("pauseIndicator");
+let isPaused = false;
 var canvas = document.querySelector('canvas');
 var ctx = canvas.getContext('2d');
 var rightPressed = false;
@@ -19,12 +21,43 @@ var leftPressed = false;
 var upPressed = false;
 var downPressed = false;
 var spacePressed = false;
-var dy = 1;
 let count = 0;
-let rndX;
-let rndY;
 var game = null;
 scoreDisplay.innerHTML = 0;
+
+/*================= event listeners =================*/
+
+startBtn.addEventListener("click", gameLaunch, false);
+
+/*===================== FONCTIONS DE JEU ===================*/
+
+function gameLaunch() {
+    canvas.style.backgroundImage = 'url("Images/spaceBackground.gif")';
+    startBtn.style.display = "none";
+    game = setInterval(loop, 16);
+    Player.inGame = true;
+}
+
+function gamePause() {
+    if(isPaused) {
+        game = setInterval(loop, 16);
+        pause.style.display = "none";
+        isPaused = false;
+    } else {
+        clearInterval(game);
+        pause.style.display = "block";
+        isPaused = true;
+    }
+}
+
+function gameOver() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    clearInterval(game);
+    canvas.style.backgroundImage = 'url("./Images/altBackground.jpg")';
+    document.getElementById("postScore").style.display = "block";
+    document.getElementById("scoreInput").value = Player.score;
+    document.getElementById("finishScore").innerHTML = "Score : "+ Player.score;
+}
 
 /*================= afficher les entités =========*/
 
@@ -61,6 +94,9 @@ function keyDownHandler(e) {
         // same here, factorisation via l'objet
         Player.getInstance().shoot();
         Player.getInstance().speed = 4;
+    } else if (e.key == "p") {
+        e.preventDefault();
+        gamePause();
     }
 }
 
@@ -141,6 +177,7 @@ function moveEnemies() {
     }
 }
 
+
 /*====================== FONCTIONS GESTION DES HITBOXES =============================*/
 
 // rendu plus générique pour l'utiliser sur les bullets ennemies
@@ -159,20 +196,33 @@ function isCollision(entity, tab) {
     }
 }
 
-displayPlayerHp(3);
+
 
 /*==================== FONCTIONS BOUCLE DE JEU ======================================*/
 
 function loop() {
-    if (Player.inGame == false) {
-        clearInterval(game);
-    }
     // Remise à zéro du canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);   
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    if (Player.inGame == false) {
+        gameOver();
+    }
+
+    if (Stage.stageTab[0] == null) {
+        new Stage(1);
+        console.log("stage created");
+    }
+    
+
+     // vérification de l'appel de la prochaine wave
+    if (Enemy.isEmpty()) {
+        console.log("condition checked");
+        Stage.stageTab[0].getNextWave();
+    }
     // création / Mise à jour position vaisseau
     let player = Player.getInstance();
     drawPlayer();
+    displayPlayerHp(Player.getInstance().hp);
     // context.drawImage(img, shipX, shipY);
     for (let i = 0; i < Enemy.enemyTab.length; i++) {
         for (let j = 0; j < Enemy.enemyTab[i].length; j++) {
@@ -196,20 +246,10 @@ function loop() {
             for (let j = 0; j < Enemy.enemyTab[i].length; j++) {
                 setTimeout(() => {
                     Enemy.enemyTab[i][j].shoot();
-                }, Math.floor(Math.random()*1000));
+                }, Math.floor(Math.random()*800));
             }
         }
     }
-
-    if (count % 200000 == 0) {
-        rndX = Math.round(Math.random() * 1180);
-        rndY = 0;
-        new Minion(rndX, rndY);
-        new Sniper(rndX, rndY);
-    }
-    // if (count % 50000 == 0) {
-    //     new Boss1(600, 160);
-    // }
 
     //Création des tirs, Stockage dans un tableau
 
@@ -241,11 +281,3 @@ function loop() {
     count++;
 
 }
-
-// Creations des frames toutes les 16 millisecondes
-function gameLaunch() {
-    game = setInterval(loop, 16);
-    Player.inGame = true;
-}
-
-gameLaunch();

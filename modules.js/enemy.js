@@ -25,6 +25,7 @@ class Enemy extends Entity {
         this.currentMove = null;
         this.getNextMove();
         this.push();
+        this.value = 10;
     }
 
     shoot() {
@@ -50,7 +51,7 @@ class Enemy extends Entity {
     }
 
     addScore() {
-        Player.score += 10;
+        Player.score += this.value;
     }
 
     push() {
@@ -67,6 +68,15 @@ class Enemy extends Entity {
                 }
             }
         }
+    }
+
+    static isEmpty() {
+        for (let i = 0; i < Enemy.enemyTab.length;i++) {
+            if (Enemy.enemyTab[i][0] != null) {
+                return false;
+            }
+        }
+        return true;
     }
 }
 
