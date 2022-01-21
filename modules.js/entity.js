@@ -72,8 +72,8 @@ export default class Entity {
         }
         if (this.posY - this.radius <= 0) {
             this.posY = this.radius;
-        } else if (this.posY + this.radius >= Entity.canvas.height) {
-            this.posY = Entity.canvas.height - this.radius;
+        } else if (this.posY + this.radius >= this.bottomBorder) {
+            this.posY = this.bottomBorder - this.radius;
         }
     }
 }

@@ -1,45 +1,127 @@
+body {
+  background-color: rgb(0, 0, 0);
+}
+
 * {
-    padding: 0;
-    margin: 0;
+  padding: 0;
+  margin: 0;
 }
 
 canvas {
-    background-color: black;
-    display: block;
-    margin: auto;
+  background-image: url("./Images/altBackground.jpg");
+  display: block;
+  margin: auto;
 }
 
 #infoGames {
-    width: 1200px;
-    margin: auto;
-    font-size: 40px;
-    display: flex;
-    justify-content: space-between;
-    height: 80px;
-    background-color: black;
-    border: 5px solid yellow;
-    color: white;
-    align-items: center;
+  width: 1200px;
+  margin: auto;
+  font-size: 30px;
+  display: flex;
+  justify-content: space-between;
+  height: 60px;
+  background-color: black;
+  border: 5px solid yellow;
+  color: white;
+  align-content: center;
 }
 
-viyfvugvugvujig p {
-    padding: 0 20px;
+#player {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#player > p {
+  margin-left: 30px;
 }
 
 #power {
-    display: flex;
-    padding: 0 20px;
+  display: flex;
+  padding: 0 20px;
 }
 
 .displayHp {
-    width: 35px;
-    height: 35px;
-    background-color: red;
-    border-radius: 50%;
-    margin: 0 10px;
+  width: 40px;
+  height: 40px;
+  background-image: url(Images/hp.png);
+  background-repeat: no-repeat;
+  margin-left: 5px;
 }
 
 #myImage {
-    width: 50px;
-    height: auto;
+  width: 50px;
+  height: auto;
+}
+
+#hidden {
+  display: none;
+}
+
+/************ BUTTONS *************/
+
+#pressStart {
+  background: linear-gradient(to right, #1d2b64, rgb(2, 0, 1));
+  color: white;
+  font-size: 30px;
+  border: 1px solid black;
+  border-radius: 10px;
+  position: absolute;
+  left: 45vw;
+  top: 360px;
+  padding: 20px;
+}
+
+button {
+  padding: 4px 10px 4px 10px;
+  background-color: rgb(10, 10, 85);
+  color: white;
+  font-size: 18px;
+  border-radius: 5px;
+  box-shadow: none;
+}
+/* Not a button, I know*/
+#pauseIndicator {
+  background: linear-gradient(to right, #1d2b64, rgb(2, 0, 1));
+  color: white;
+  font-size: 30px;
+  border: 1px solid black;
+  border-radius: 10px;
+  position: absolute;
+  left: 40vw;
+  top: 340px;
+  padding: 20px;
+  text-align: center;
+  display: none;
+}
+
+/********** POST FORM ************/
+
+#postScore {
+  background: linear-gradient(to right, #1d2b64, rgb(2, 0, 1));
+  border: 1px solid black;
+  border-radius: 10px;
+  position: absolute;
+  left: 43vw;
+  top: 330px;
+  padding: 20px;
+  display: none;
+}
+
+#postScore > form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#finishScore {
+  color: white;
+  font-size: 22px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+#scoreInput {
+  display: none;
 }

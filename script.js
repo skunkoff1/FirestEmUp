@@ -1,36 +1,69 @@
 import Player from './modules.js/player'
 import Enemy from './modules.js/enemy';
 import Bullets from './modules.js/bullets';
-import Minion from './modules.js/ennemies/minion';
-import Boss1 from './modules.js/ennemies/boss1';
-import Sniper from './modules.js/ennemies/sniper';
 import { displayPlayerHp } from './modules.js/assets/infoBar';
+import Stage from './modules.js/stage';
+import Stage1 from './modules.js/stages/stage1';
+import Stage2 from './modules.js/stages/stage2';
+import Heal from './modules.js/items/item';
+import Item from './modules.js/items/item';
 
 /*============= VARIABLES ============================*/
+
 let scoreDisplay = document.getElementById('score');
+let startBtn = document.getElementById("pressStart");
 let img = document.getElementById("myImage");
-let enemyImg = document.getElementById("enemyImg");
-let bossImg = document.getElementById("bossImg");
 let info = document.getElementById('infoGames');
+let pause = document.getElementById("pauseIndicator");
+let isPaused = false;
 var canvas = document.querySelector('canvas');
 var ctx = canvas.getContext('2d');
 var rightPressed = false;
 var leftPressed = false;
 var upPressed = false;
 var downPressed = false;
-var spacePressed = false;
-var dy = 1;
+var shootUpPressed = false;
+var boostPressed = false;
 let count = 0;
-let rndX;
-let rndY;
 var game = null;
 scoreDisplay.innerHTML = 0;
 
+/*================= event listeners =================*/
+
+startBtn.addEventListener("click", gameLaunch, false);
+
+/*===================== FONCTIONS DE JEU ===================*/
+
+function gameLaunch() {
+    canvas.style.backgroundImage = 'url("Images/spaceBackground.gif")';
+    startBtn.style.display = "none";
+    game = setInterval(loop, 16);
+    Player.inGame = true;
+}
+
+function gamePause() {
+    if(isPaused) {
+        game = setInterval(loop, 16);
+        pause.style.display = "none";
+        isPaused = false;
+    } else {
+        clearInterval(game);
+        pause.style.display = "block";
+        isPaused = true;
+    }
+}
+
+function gameOver() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    clearInterval(game);
+    canvas.style.backgroundImage = 'url("./Images/altBackground.jpg")';
+    document.getElementById("postScore").style.display = "block";
+    document.getElementById("scoreInput").value = Player.score;
+    document.getElementById("finishScore").innerHTML = "Score : "+ Player.score;
+}
+
 /*================= afficher les entités =========*/
 
-enemyImg.style.display = "none";
-img.style.display = "none";
-bossImg.style.display = "none";
 
 function drawPlayer() {
     // update du drawPlayer, il a simplement a récupérer les coordonnées actuelles
@@ -55,12 +88,13 @@ function keyDownHandler(e) {
         upPressed = true;
     } else if (e.key == "s" || e.key == "ArrowDown") {
         downPressed = true;
-    } else if (e.key == "n") {
-        spacePressed = true;
-
-        // same here, factorisation via l'objet
-        Player.getInstance().shoot();
-        Player.getInstance().speed = 4;
+    } else if (e.key == "k") {
+        shootUpPressed = true;
+    } else if (e.key == "l") {
+        boostPressed = true;
+    } else if (e.key == "p") {
+        e.preventDefault();
+        gamePause();
     }
 }
 
@@ -73,9 +107,10 @@ function keyUpHandler(e) {
         upPressed = false;
     } else if (e.key == "s" || e.key == "ArrowDown") {
         downPressed = false;
-    } else if (e.key == "n") {
-        spacePressed = false;
-        Player.getInstance().speed = 7;
+    } else if (e.key == "k") {
+        shootUpPressed = false;
+    } else if (e.key == "l") {
+        boostPressed = false;
     }
 }
 
@@ -99,7 +134,7 @@ function drawBullets() {
     }
 }
 
-function moveBullets(tab) {
+function moveObjects(tab) {
     for (let i = 0; i < tab.length; i++) {
         tab[i].move(tab[i].direction);
     }
@@ -107,27 +142,12 @@ function moveBullets(tab) {
 
 /*================== FONCTIONS ENNEMIS =============================*/
 
-function drawEnemies() {
+function drawEntities(tab) {
 
-    // affiche les minions
-    for (let m = 0; m < Enemy.enemyTab[0].length; m++) {
+    for (let i = 0; i < tab.length; i++) {
+        let current = tab[i];
         ctx.beginPath();
-        ctx.drawImage(enemyImg, Enemy.enemyTab[0][m].posX - 25, Enemy.enemyTab[0][m].posY - 25, 50, 50);
-        ctx.closePath();
-    }
-
-    // affiche les snipers
-    for (let s = 0; s < Enemy.enemyTab[1].length; s++) {
-        ctx.beginPath();
-        ctx.drawImage(enemyImg, Enemy.enemyTab[1][s].posX - Enemy.enemyTab[1][s].radius, Enemy.enemyTab[1][s].posY - Enemy.enemyTab[1][s].radius, Enemy.enemyTab[1][s].radius*2, Enemy.enemyTab[1][s].radius*2);
-        ctx.closePath();
-    }
-
-    // affiche les boss, seront toujours le dernier sous tableau de enemyTab
-    for (let b = 0; b < Enemy.enemyTab[Enemy.enemyTab.length-1].length; b++) {
-        let current = Enemy.enemyTab[Enemy.enemyTab.length-1][b];
-        ctx.beginPath();
-        ctx.drawImage(bossImg, current.posX - current.radius, current.posY - current.radius, current.radius*2, current.radius*2);
+        ctx.drawImage(current.image, current.posX - current.radius, current.posY - current.radius, current.radius*2, current.radius*2);
         ctx.closePath();
     }
 
@@ -135,11 +155,10 @@ function drawEnemies() {
 
 function moveEnemies() {
     for (let i = 0; i < Enemy.enemyTab.length; i++) {
-        for (let j = 0; j < Enemy.enemyTab[i].length; j++) {
-            Enemy.enemyTab[i][j].getNextMove();
-        }
+        Enemy.enemyTab[i].getNextMove();
     }
 }
+
 
 /*====================== FONCTIONS GESTION DES HITBOXES =============================*/
 
@@ -155,68 +174,75 @@ function isCollision(entity, tab) {
             if (tab[i] instanceof Bullets) {
                 tab.splice(i,1);
             }
+            if (tab[i] instanceof Item) {
+                tab[i].trigger();
+                tab.splice(i, 1);
+            }
         }
     }
 }
 
-displayPlayerHp(3);
+// Initialisation des données de jeu
+
+//new Stage1();
+new Stage2();
 
 /*==================== FONCTIONS BOUCLE DE JEU ======================================*/
 
 function loop() {
-    if (Player.inGame == false) {
-        clearInterval(game);
-    }
     // Remise à zéro du canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);   
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (Player.inGame == false) {
+        gameOver();
+    }
+    
+     // vérification de l'appel de la prochaine wave
+    if (Enemy.isEmpty()) {
+        Stage.stageTab[0].getNextWave();
+    }
 
     // création / Mise à jour position vaisseau
     let player = Player.getInstance();
     drawPlayer();
+    displayPlayerHp(Player.getInstance().hp);
     // context.drawImage(img, shipX, shipY);
     for (let i = 0; i < Enemy.enemyTab.length; i++) {
-        for (let j = 0; j < Enemy.enemyTab[i].length; j++) {
-            isCollision(Enemy.enemyTab[i][j], Bullets.goodBullets);
-        }
+        isCollision(Enemy.enemyTab[i], Bullets.goodBullets);
     }
-    for (let i = 0; i<Enemy.enemyTab.length;i++) {
-        isCollision(player, Enemy.enemyTab[i]);
-    }
+    isCollision(player, Enemy.enemyTab);
     moveEnemies();
-    drawEnemies();
-    moveBullets(Bullets.goodBullets);
-    moveBullets(Bullets.badBullets);
+    drawEntities(Enemy.enemyTab);
+    drawEntities(Item.itemsTab);
+    moveObjects(Bullets.goodBullets);
+    moveObjects(Bullets.badBullets);
+    moveObjects(Item.itemsTab);
     drawBullets();
     isCollision(player, Bullets.badBullets);
+    isCollision(player, Item.itemsTab);
 
     // actions les 60 frames (1sec), Stockage dans un tableau
     if (count % 60 == 0) {
 
         for (let i = 0; i < Enemy.enemyTab.length; i++) {
-            for (let j = 0; j < Enemy.enemyTab[i].length; j++) {
-                setTimeout(() => {
-                    Enemy.enemyTab[i][j].shoot();
-                }, Math.floor(Math.random()*1000));
-            }
+            
+            Enemy.enemyTab[i].shootTimeout = setTimeout(() => {
+                Enemy.enemyTab[i].shoot();
+            }, Math.floor(Math.random()*800));
+            
         }
     }
 
-    if (count % 200000 == 0) {
-        rndX = Math.round(Math.random() * 1180);
-        rndY = 0;
-        new Minion(rndX, rndY);
-        new Sniper(rndX, rndY);
-    }
-    // if (count % 50000 == 0) {
-    //     new Boss1(600, 160);
-    // }
+    // Shoot keys handlers
 
-    //Création des tirs, Stockage dans un tableau
-
-    if (spacePressed && count % 7 == 0) {
+    if (shootUpPressed) {
         player.shoot();
     }
 
+    if (boostPressed) {
+        player.boost();
+    }
+    
     // Fonction mise à jour de la position du vaisseau en fonction des touches pressées
 
     if (upPressed && rightPressed) {
@@ -241,11 +267,3 @@ function loop() {
     count++;
 
 }
-
-// Creations des frames toutes les 16 millisecondes
-function gameLaunch() {
-    game = setInterval(loop, 16);
-    Player.inGame = true;
-}
-
-gameLaunch();
